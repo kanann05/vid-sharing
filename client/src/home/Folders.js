@@ -110,7 +110,7 @@
 //             )}
 //         </div>
 //     );
-// }
+// }X
 
 
 
@@ -127,7 +127,7 @@ function Folder({ folderName, imgUrl}) {
     const rout = folderName.replace(/\s+/g, "_");
     return(<Link  
         to = {rout}
-        
+
         onClick = {() => {
             
         }} id = {folderName} onMouseEnter = {() => {
@@ -137,7 +137,7 @@ function Folder({ folderName, imgUrl}) {
         console.log("left");
         document.getElementById(folderName).classList.remove('folder-hovered');
     }} className = "folder" style = {{paddingTop : "10px", display : "flex", alignItems : "center", flexDirection : "column", position : "relative", backgroundColor : "rgb(66, 66, 66)"}}>
-        <div className = "del-folder" style = {{zIndex : "5", width : "21px", height : "21px", fontSize : '10px', borderRadius : "100%", position : "absolute", top : "5px", right : "5px", backgroundColor:"rgba(0,0, 0, 0.7)", color : "white", textAlign:'center', display: "flex", justifyContent: "center", alignItems: 'center'}}>X</div>
+        <div onClick = {(e) => {e.preventDefault(); console.log("clicked x")}} onMouseEnter = {() => {console.log("enterred cross")}}className = "del-folder" style = {{zIndex : "5", width : "21px", height : "21px", fontSize : '10px', borderRadius : "100%", position : "absolute", top : "5px", right : "5px", backgroundColor:"rgba(0,0, 0, 0.7)", color : "white", textAlign:'center', display: "flex", justifyContent: "center", alignItems: 'center'}}>X</div>
         <div style = {{objectFit : "cover", position : "relative", width : "90%", aspectRatio : 1/0.8, backgroundColor : "red"}}>
             <img style={{
                 width: "100%", 
