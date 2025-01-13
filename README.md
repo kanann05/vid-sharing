@@ -1,0 +1,1 @@
+-Added server-side rendering of folders when data is sent.
