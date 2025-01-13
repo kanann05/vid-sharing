@@ -116,7 +116,7 @@
 
 import '../App.css';
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Form } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Form, Link } from 'react-router-dom';
 import data from '../data.js'
 import axios from 'axios';
 
@@ -124,7 +124,10 @@ function Folder({ folderName, imgUrl}) {
     function Del() {
         return(<div className = "del-folder" style = {{width : "21px", height : "21px", fontSize : '10px', borderRadius : "100%", position : "absolute", top : "5px", right : "5px", backgroundColor:"rgba(0,0, 0, 0.7)", color : "white", textAlign:'center', display: "flex", justifyContent: "center", alignItems: 'center'}}>X</div>)
     }
-    return(<div  
+    const rout = folderName.replace(/\s+/g, "_");
+    return(<Link  
+        to = {rout}
+        
         onClick = {() => {
             
         }} id = {folderName} onMouseEnter = {() => {
@@ -144,12 +147,17 @@ function Folder({ folderName, imgUrl}) {
             </img>
         </div>
         <p style = {{color : "rgba(255,255,255, 0.8)", fontFamily : "poppins", fontWeight : "400", margin : "4px 0 4px 0", fontSize : "0.9rem"}}>{folderName}</p>
-    </div>)
+    </Link>)
+}
+function CreateRoute({ foldername}) {
+    const rout = foldername.replace(/\s+/g, "_");
+    return(<Route exact path = 'rout'></Route>)
 }
 export default function Folders() {
     let [data, setData] = useState(null)
     useEffect(()=>{
         setData(JSON.parse(localStorage.getItem('data')));
+
     }, [])
     return(<div style = {{width : "80vw"}}className = "folders">
         {data != null ? (data.map((folder, i) => (<Folder folderName = {folder.foldername} imgUrl = {folder.img} key = {i} />))) : (null)}
