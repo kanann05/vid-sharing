@@ -1,1 +1,2 @@
--Added server-side rendering of folders when data is sent.
+-Dynamic folder addition using local img or an img with web link
+-Folder Page routes and its nav WIP
