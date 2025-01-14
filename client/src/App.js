@@ -3,7 +3,7 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Home from './home/Home.js'
-
+import FolderPage from './FolderPage.js';
 function Login({ setLoggedin }) {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
@@ -146,8 +146,9 @@ function App() {
         const data = await response.json();
         if (data) {
           setLoggedin(true); // User is authenticated
-          console.log(data);
+          
           localStorage.setItem("data", JSON.stringify(data));
+          
         } else {
           setLoggedin(false); // No valid data received
         }
@@ -172,8 +173,10 @@ function App() {
         <Routes>
           {/* Default route goes here (Home) */}
           <Route exact path="/" element={loggedin ? <Home setLoggedin={setLoggedin} /> : <Navigate to="/login" />} />
-          
-          {/* Other routes can follow */}
+          {/* <Route exact path = "tesss" element = {<FolderPage />}></Route> */}
+          {JSON.parse(localStorage.getItem("data")) == null ? (null) : JSON.parse(localStorage.getItem("data")).map((fo, i) => (
+      <Route key={i} exact path={fo.foldername} element={<FolderPage />} />
+      ))}          {/* Other routes can follow */}
           <Route exact path="/login" element={loggedin ? <Navigate to = "/" /> : <Login setLoggedin={setLoggedin} />} />
         </Routes>
       </Router>

@@ -36,6 +36,9 @@ html, body {
 }
 
 @media (min-width: 1101px) { /* Change to min-width for larger screens */
+  .fp-nav-sf {
+    width: max(10px, 12vw);
+  }
   .log-out-img {
     display: none; 
   }
@@ -45,10 +48,34 @@ html, body {
   .folders {
     margin-top : 65px;
   }
+  .fp-nav-sf-img {
+    display: none;
+  }
+  .fp-nav-dd, .fp-nav-p, .fp-nav p {
+    display: flex;
+  }
+  .fp-nav-add p {
+    display: flex;
+  }
 }
 
 
 @media (max-width: 1100px) {
+  .fp-nav-add {
+    left : 5vw;
+  }
+  .fp-nav-sf {
+    width: max(10px, 12vw);
+  }
+  .fp-nav-dd, .fp-nav-p, .fp-nav p {
+    display: none;
+  }
+  .fp-nav-sf-img {
+    display: flex;
+  }
+  .fp-nav-sf p {
+    display: none;
+  }
   
   .folders {
     margin-top : 40px;
@@ -82,7 +109,7 @@ input#file-upload-button {
   position: relative;
   align-items: center;
   justify-content: flex-start;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 150px));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 190px));
   gap: 50px; 
   margin-bottom: 30px;
 }
@@ -97,11 +124,52 @@ input#file-upload-button {
   position: relative;
   padding: 0;
 }
+.fp-nav {
+  margin-top : 20px;
+  background-color: #2c2c2c00;
+  width: 85vw;
+  height: 2.85em;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  padding: 0;
+}
 .log-out{
   cursor : pointer
 }
 
-
+.fp-nav-add {
+  width: max(10px, 10vw);
+}
+.fp-nav-sf {
+  right: 5vw;
+}
+.fp-nav-sf, .fp-nav-add {
+position: relative;
+  background-color: #373a3e;
+  box-shadow: none;
+  border: none;
+  
+  height: 2.3rem;
+  color: rgb(220, 230, 245);
+  border-radius: 5px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 300;
+  padding: 0; 
+  display: flex;
+  justify-content: center;
+  gap : 7%;
+  align-items: center;
+  text-align: center; 
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
+  overflow: hidden;
+}
+.fp-nav-sf {
+  width: max(10px, 12vw);
+}
 .log-out, .nav-upload, .nav-search-bar {
   position: relative;
   background-color: #373a3e;
@@ -166,6 +234,9 @@ input#file-upload-button {
 }
 .folder-hovered .del-folder {
   opacity: 1;
+}
+a {
+  text-decoration: none;
 }
 .folder {
   transition: transform 0.3s ease;
@@ -234,7 +305,7 @@ button {
   width: max(10px, 10vw);
 }
 
-.log-out:hover, .nav-upload:hover {
+.log-out:hover, .nav-upload:hover, .fp-nav-add:hover, .fp-nav-sf:hover {
   background-color: rgba(112, 131, 190, 0.205);
   border-radius: 1px;
 }

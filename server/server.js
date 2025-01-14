@@ -48,15 +48,18 @@ app.post('/uploadimg', img_upload.single('img-file'), (req, res, next) => {
     if(dup != undefined) {
       return res.status(402).send('Image url already exists, try changing the url.');
     }
-    require(`./jsons/${req.body.username}/data.js`).push({'folderName' : req.body.folderName, img : req.body.imgUrl});
+    require(`./jsons/${req.body.username}/data.js`).push({'foldername' : req.body.folderName, img : req.body.imgUrl});
+    console.log( require(`./jsons/${req.body.username}/data.js`));
+    return res.json({"success" : true})
   }
   let dup3 = require(`./jsons/${req.body.username}/data.js`).find(i => i.img === `/vidi/${file.filename}`);
   if(dup3 != undefined) {
     return res.status(403).send('Image with same name exists');
   }
   
-  require(`./jsons/${req.body.username}/data.js`).push({'folderName' : req.body.folderName,'img' : `/vidi/${file.filename}`});
+  require(`./jsons/${req.body.username}/data.js`).push({'foldername' : req.body.folderName,'img' : `/vidi/${file.filename}`});
   console.log(require(`./jsons/${req.body.username}/data.js`))
+  console.log( require(`./jsons/${req.body.username}/data.js`));
 
   res.json({"filename" : file.filename});
 })
