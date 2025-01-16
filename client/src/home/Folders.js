@@ -11,9 +11,8 @@ function Folder({ folderName, imgUrl}) {
     
     const rout = folderName;
     return(<Link  
-        
         to = {rout}
-        
+        state={{foldername : folderName}}
         onClick = {() => {
             
         }} id = {folderName} onMouseEnter = {() => {

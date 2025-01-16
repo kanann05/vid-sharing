@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Home from './home/Home.js'
 import FolderPage from './FolderPage.js';
+import Player from './Player.js';
+import reactplayer from 'react-player'
 function Login({ setLoggedin }) {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
@@ -171,6 +173,7 @@ function App() {
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <Router>
         <Routes>
+          <Route exact path = '/player' element = {<Player />} />
           {/* Default route goes here (Home) */}
           <Route exact path="/" element={loggedin ? <Home setLoggedin={setLoggedin} /> : <Navigate to="/login" />} />
           {/* <Route exact path = "tesss" element = {<FolderPage />}></Route> */}

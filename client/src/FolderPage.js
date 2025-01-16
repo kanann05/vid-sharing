@@ -1,12 +1,120 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Form, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Form, Link, useLocation} from 'react-router-dom';
 import data from './data.js'
 import axios from 'axios';
+import Player from './Player.js'
+
+function Subfolder({ sfname, setFocus }) {
+    return(<div onClick = {() => {
+        setFocus(sfname)
+    }} className = "sf-div" id = {sfname} style = {{
+        overflow : "hidden",
+        backgroundColor : "rgba(57, 57, 57, 0.7)",
+        width : "100%",
+        marginBottom : "10px",
+        height : "40px",
+        display : "flex",
+        alignItems : "center",
+        justifyContent : "center",
+        color : "rgba(216, 234, 255, 0.73)",
+        position : "relative"
+    }}>
+        {sfname}
+        {/* <div className = "sf-botbor"></div> */}
+    </div>)
+}
+function SubFolders({ subfolders, setFocus }) {
+    return(<div style = {{marginTop : "0px", position : "relative", width : "100%"}}>
+            {subfolders != null ? (subfolders.map((f, i) => (<Subfolder setFocus = {setFocus} sfname={f} key = {i}/>))) : (null)}
+        </div>)
+}
+
+function Video({ vidname, src }) {
+    return(<Link to = '/player' state={{src : src}} className = "sf-div" id = {vidname} style = {{
+        overflow : "hidden",
+        backgroundColor : "rgba(57, 57, 57, 0.7)",
+        width : "100%",
+        marginBottom : "10px",
+        height : "40px",
+        display : "flex",
+        alignItems : "center",
+        justifyContent : "center",
+        color : "rgba(216, 234, 255, 0.73)",
+        position : "relative"
+    }}>{vidname}<div className = "sf-botbor"></div></Link>)
+}
 
 export default function FolderPage() {
-    let [toggle, setToggle] = useState(false);
+    const location = useLocation();
+    const folder = location.state.foldername;
+    console.log(folder)
+    let [toggle, setToggle] = useState(true);
     let [folderT, setFolderT] = useState(false);
+    let [sfn, setSfn] = useState("");
+    let [subfolders, setSubfolders] = useState(null);
+    let [focus, setFocus] = useState(null);
+    let [videos, setVideos] = useState(null);
+
+    useEffect(() => {
+        if(focus != null) {
+            document.getElementById(focus).style.backgroundColor = "rgba(0, 0, 0, 0.65)";
+            
+             
+            fetch('/videos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user: localStorage.getItem("username"),
+                    folder: folder,
+                    subfolder: focus,
+                }),
+            })
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json(); 
+                })
+                .then((data) => {
+                    console.log(data)
+                    setVideos(data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            
+            
+            
+        }
+    }, [focus])
+    useEffect(() => { 
+        const fetchData = async () => {
+            try {
+                const res = await fetch('/subfolders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user: localStorage.getItem("username"),
+                        folder: folder,
+                    }),
+                });
+    
+                if (!res.ok) {
+                    alert('Something went wrong');
+                    return;
+                }
+    
+                const data = await res.json(); 
+                setSubfolders(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+    
+        fetchData();
+    }, []);
+    
     useEffect(()=> {
         if(toggle) {
             document.querySelector('.sf-sb').classList.add('sf-sb-vis');
@@ -18,13 +126,13 @@ export default function FolderPage() {
     }, [toggle])
     return(<div style = {{minHeight : "100vh", display : "flex", flexDirection : "column"}}>
 
-        <div class = "fp-nav">
-            <div class = "fp-nav-sf" style = {{position : "relative"}}>
-            <div onClick = {()=> {setToggle(!toggle)}} class = "fp-nav-dd" style = {{borderRightWidth : "2px", borderRightStyle : "rgba(255, 255, 255, 0.8)", borderRightStyle : "solid", backgroundColor : "rgba(112, 131, 190, 0.28)", position : "relative", width : "25%", height : '100%', alignItems : "center", justifyContent : 'center'}}>
+        <div className = "fp-nav">
+            <div className = "fp-nav-sf" style = {{position : "relative"}}>
+            <div onClick = {()=> {setToggle(!toggle)}} className = "fp-nav-dd" style = {{borderRightWidth : "2px", borderRightStyle : "rgba(255, 255, 255, 0.8)", borderRightStyle : "solid", backgroundColor : "rgba(112, 131, 190, 0.28)", position : "relative", width : "25%", height : '100%', alignItems : "center", justifyContent : 'center'}}>
                         <img src="dd.svg" style={{ transform : toggle? "rotate(90deg)" : "rotate(270deg)", filter : "invert()", opacity : "0.7", margin : "0", width: "70%", aspectRatio: "1/1" }} />
 
                 </div>
-                <div class = "fp-nav-p"  style = {{textAlign : "center", justifyContent : "center", alignItems: "center"}}> <p>Sub-folders</p>
+                <div className = "fp-nav-p"  style = {{textAlign : "center", justifyContent : "center", alignItems: "center"}}> <p>Sub-folders</p>
                 </div>
                 
                 <div onClick = {() => {setToggle(!toggle)}} className = "fp-nav-sf-img" style = {{position : "relative", height : "75%", alignItems : "center", justifyContent : "center"}}>
@@ -32,7 +140,7 @@ export default function FolderPage() {
                     <img style = {{height : "65%", aspectRatio : "1/1", position : "absolute", opacity : toggle ? "100" : "0"}} src = "cross.png"/>
                 </div>
             </div>
-            <div class = "fp-nav-add">
+            <div className = "fp-nav-add">
                 <div style = {{position : "relative", display : "flex", height : "55%", alignItems : "center"}}>
                     <img style = {{height : "85%", aspectRatio : "1/1"}} src = "add.png"/>
                 </div>
@@ -42,8 +150,8 @@ export default function FolderPage() {
         </div>
 
         <div className = "fp-body-wrapper" style = {{position : "relative", right : "5vw", overflow : "hidden", backgroundColor : "transparent", marginTop : "20px", display : "flex", flexDirection : "row", justifyContent : "space-between"}}>
-            <div className = "sf-sb" style = {{flexDirection : "column", backgroundColor : "rgba(0, 0, 0, 0.7)", width : "17.5vw", position : "relative", alignItems : "center", justifyContent : "center"}}> 
-                <div onClick = {() => {setFolderT(!folderT)}} className = "add-sf" style = {{borderRadius : "3px", marginTop : "15px", backgroundColor : "rgba(52, 54, 108, 0.7)", boxShadow : "rgba(122, 137, 159, 0.7) 0px 0px 100px 0px", display : "flex",  justifyContent : "center", alignItems : "center", gap : "7px", flexDirection : "row", position : "relative", width : "10vw", height : "27px"}}>
+            <div className = "sf-sb" style = {{borderRadius : "5px", color : "white", flexDirection : "column", backgroundColor : "rgba(34, 34, 34, 0.7)", width : "17.5vw", position : "relative", alignItems : "center", justifyContent : "center", border : "0.3px solid rgba(255, 255, 255, 0.4)"}}> 
+                <div onClick = {() => {setFolderT(!folderT)}} className = "add-sf" style = {{borderRadius : "3px", marginTop : "15px", backgroundColor : "rgba(92, 94, 167, 0.7)", boxShadow : "rgba(122, 137, 159, 0.7) 0px 0px 100px 0px", display : "flex",  justifyContent : "center", alignItems : "center", gap : "7px", flexDirection : "row", position : "relative", width : "10vw", height : "27px"}}>
                     <div style = {{ display : "flex",  justifyContent : "center", alignItems : "center", position : "relative", aspectRatio : '1/1', height : "100%", }}>
                         <img style = {{height : "60%", aspectRatio : '1/1'}} src = 'add.png'/>
                     </div>
@@ -53,15 +161,38 @@ export default function FolderPage() {
                 <div className = "add-sf-db" style = {{ display : folderT ? "flex" : "none", backgroundColor : "rgba(0, 0, 0, 0.4)", width : "100%", flexDirection : "column"
                 
                 ,position : "relative", marginTop : "20px", alignItems : "center", justifyContent : "center"}}>
-                    <input placeholder = "Folder Name" style = {{backgroundColor : "rgba(255, 255, 255, 0.8)",
+                    <input value = {sfn} onChange = {(e) => {setSfn(e.target.value)}} placeholder = "Folder Name" style = {{backgroundColor : "rgba(255, 255, 255, 0.8)",
                         width : "60%", height : "25px", borderRadius : "5px", outline : "none", shadow : "none", border : "none", paddingLeft : "10px", fontFamily : "lexend"
                     }}></input>
-                    <button style = {{marginTop : "10px", width : "25%", padding : "0", marginBottom : "10px", backgroundColor : "rgba(0, 30, 0, 0)", border : "white 1px solid", display : "flex", alignItems:"center", justifyContent : "center", textAlign : "center"}}>add</button>
+                    <button onClick = {async (e) => {
+                        // let formdata = new FormData();
+                        // formdata.append('username', localStorage.getItem('username'));
+                        // formdata.append('folder', folder);
+                        // formdata.append('subfolder', sfn);
+                        let res = await fetch('/createsf', {
+                            method : 'POST',
+                            headers : {
+                                'Content-type': 'application/json'
+                            },
+                            body : JSON.stringify({'username' : localStorage.getItem('username'), 'folder' : folder, 'subfolder' : sfn})
+                        })
+                        if(!res.ok) {
+                            alert("error occured");
+                        }
+                    }} style = {{marginTop : "10px", width : "25%", padding : "0", marginBottom : "10px", backgroundColor : "rgba(0, 30, 0, 0)", border : "white 1px solid", display : "flex", alignItems:"center", justifyContent : "center", textAlign : "center"}}>add</button>
                 </div>
+                <p style = {{padding : "0", margin : "5px 0 5px 0"}}>------------</p>
+                <SubFolders subfolders={subfolders} setFocus = {setFocus}/>
             </div>
 
             
-            <div className = "vids" style = {{backgroundColor : "green", width : "60vw"}}>hello</div>
+            <div className = "vids" style = {{backgroundColor : "transparent", width : "60vw"}}>
+                {videos == null ? (null) : (videos.map((v, i) => (
+                    <Video vidname={v.videoname} src = {v.src} key= {i}/>
+                )))}
+
+
+            </div> 
 
         </div>
     </div>)
