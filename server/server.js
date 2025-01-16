@@ -4,9 +4,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const userinfo = require('./userinfo.js');
-const multer = require('multer');
 const fs = require('fs');
+// const rawData = fs.readFileSync('./users.json', 'utf8');
+const userinfo = JSON.parse(fs.readFileSync('./users.json', 'utf8'));
+const multer = require('multer');
 const path = require('path');
 
 const app = express();
@@ -73,20 +74,6 @@ app.get('/vidi/:filename', (req, res) => {
     }
   });
 });
-
-
-
-async function init() {
-  try {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash("leopard", salt);
-    userinfo.push({ username: "admin", password: hashedPassword });
-    // console.log(userinfo);
-  } catch (err) {
-    console.error(err);
-  }
-}
-init();
 
 
 
