@@ -356,3 +356,27 @@ a {
     transform: rotate(360deg);
   }
 }
+
+.sf-sb {
+  transform: translateX(-100%);
+  display: none;
+  /* pointer-events: none;  */
+  /* transition: transform 0.5s ease; */
+}
+
+.sf-sb-vis {
+  display: flex;
+  transform: translateX(0%);
+  /* opacity: 1; */
+  /* pointer-events: auto;  */
+  animation: anim 0.5s; 
+}
+
+@keyframes anim {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0%); 
+  }
+}
