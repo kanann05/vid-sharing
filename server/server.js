@@ -23,6 +23,17 @@ var storage_img = multer.diskStorage({
     cb(null, file.originalname);
   }
 });
+
+var storage_video = multer.diskStorage({
+  destination : function (req, file, cb) {
+    cb(null, 'videos');
+  },
+  filename : function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+
+const video_upload = multer ( {storage: storage_video} );
 const img_upload = multer({ storage: storage_img }); 
 
 app.use(bodyParser.json());
@@ -32,7 +43,14 @@ app.listen('5000', () => {
 });
 
 
+app.post('/uploadvideo', video_upload.single('video-file'), (req, res, next) => {
+  const file = req.file;
+  const videoname = req.body.videoname;
+  const folder = req.body.folder;
+  const subfolder = req.body.subfolder;
 
+  
+})
 app.post('/uploadimg', img_upload.single('img-file'), (req, res, next) => {
   const file = req.file;
   

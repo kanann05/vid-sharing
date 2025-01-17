@@ -47,7 +47,7 @@ function Video({ vidname, src }) {
 
 export default function FolderPage() {
     const location = useLocation();
-    const folder = location.state.foldername;
+  const folder = location.state?.foldername || decodeURIComponent(window.location.pathname);
     console.log(folder)
     let [toggle, setToggle] = useState(true);
     let [folderT, setFolderT] = useState(false);
@@ -55,6 +55,7 @@ export default function FolderPage() {
     let [subfolders, setSubfolders] = useState(null);
     let [focus, setFocus] = useState(null);
     let [videos, setVideos] = useState(null);
+    let [file, setFile] = useState(null);
 
     useEffect(() => {
         if(focus != null) {
@@ -117,10 +118,14 @@ export default function FolderPage() {
     
     useEffect(()=> {
         if(toggle) {
+            document.querySelector('.fp-body-wrapper').style.justifyContent = "space-between";
+            document.querySelector('.fp-body-wrapper').style.right = "5vw";
             document.querySelector('.sf-sb').classList.add('sf-sb-vis');
             // document.querySelector('.sf-sb').style.display = "flex";
         }
         else {
+            document.querySelector('.fp-body-wrapper').style.justifyContent = "center";
+            document.querySelector('.fp-body-wrapper').style.right = "0vw";
             document.querySelector('.sf-sb').classList.remove('sf-sb-vis')
         }
     }, [toggle])
@@ -140,12 +145,28 @@ export default function FolderPage() {
                     <img style = {{height : "65%", aspectRatio : "1/1", position : "absolute", opacity : toggle ? "100" : "0"}} src = "cross.png"/>
                 </div>
             </div>
+
+            <div>
             <div className = "fp-nav-add">
                 <div style = {{position : "relative", display : "flex", height : "55%", alignItems : "center"}}>
                     <img style = {{height : "85%", aspectRatio : "1/1"}} src = "add.png"/>
                 </div>
                 <p>Add video</p>
+            </div>
+            <div className = "fp-add-vid-db" style = {{ padding : "0px 10px 0px 10px", marginTop : "10px", borderRadius : "5px", width : "180px", position : "relative", display : "flex", flexDirection : "column", position : "absolute", zIndex : "5", backgroundColor : "#373A3E", justifyContent : "center", alignItems : "center"}}>
+                <input style = {{marginTop : "15px", fontSize : "12px",marginBottom : "5px"}} placeholder = "Video name"></input>
+                <h4 style = {{margin : "0", marginBottom : "10px", marginTop : "0px", color : "white"}}>-------------</h4>
+                <input style = {{fontSize : "12px",marginBottom : "10px"}} placeholder = "Video url"></input>
                 
+                <input type="file" onChange = {(e) => {
+                    setFile(e.target.files[0]);
+                }} className = "upload-vid-input" style = {{width : "0px", height : "0px", position : "absolute"}}></input>
+                <button onClick = {() => {document.querySelector('.upload-vid-input').click()}}style = {{marginTop : "5px", width : "60%", backgroundColor : "#26282B", color : "#D1DDE0", fontFamily : "lexend", fontSize : "12px", fontWeight : "300"}}>Upload video</button>
+                <h4 style = {{margin : "0", margin : "0", color : "white", fontSize : "12px", fontWeight : "100"}}>{file == null? "" : file.name}</h4>
+                <h4 style = {{margin : "0",margin : "5px 0px 10px 0px", marginBottom : "5px", color : "white"}}>-------------</h4>
+
+                <button style = {{marginBottom : "15px", color : "#FAEBD7", backgroundColor : "#26282B", fontFamily : "lexend", width : "70%",height : "30px"}}>Add</button>
+            </div>
             </div>
         </div>
 
@@ -186,7 +207,7 @@ export default function FolderPage() {
             </div>
 
             
-            <div className = "vids" style = {{backgroundColor : "transparent", width : "60vw"}}>
+            <div className = "vids" style = {{marginTop : "15px", backgroundColor : "transparent", width : "60vw"}}>
                 {videos == null ? (null) : (videos.map((v, i) => (
                     <Video vidname={v.videoname} src = {v.src} key= {i}/>
                 )))}

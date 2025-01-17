@@ -3,6 +3,7 @@
   font-family: 'poppins'
   
 }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -70,6 +71,9 @@ html, body {
     width: calc(12vw - 10%);
     display: flex;
   }
+  .fp-add-vid-db {
+    right: 0;
+  }
 }
 
 
@@ -77,12 +81,16 @@ html, body {
   .fp-nav-add {
     left : 5vw;
   }
+  .fp-add-vid-db {
+    right : -5vw;
+  }
   .fp-nav-sf {
     width: max(10px, 12vw);
     display: flex;
     justify-content: center;
     align-items: center;
   }
+  
   .fp-nav-dd, .fp-nav-p, .fp-nav p {
     display: none;
   }
@@ -229,7 +237,7 @@ position: relative;
 }
 .nav-upload-db {
   background-color: #373a3e;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   gap : 10px;
   position: absolute;
@@ -243,7 +251,7 @@ position: relative;
 .nav-upload-db {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s ease;
+  /* transition: opacity 0.25s ease; */
 }
 .del-folder {
   opacity: 0;
@@ -266,7 +274,9 @@ a {
 
 .visible {
   opacity: 1;
+  display: flex;
   pointer-events: auto;
+  animation : opacityeffect 0.5s ease;
 }
 
 
@@ -278,7 +288,7 @@ a {
         opacity: 1;
     }
 }
-.nav-upload-db input, button {
+.nav-upload-db input, button, input {
   background-color: #4f4f4f;
   border: none;
   height: 25px;
