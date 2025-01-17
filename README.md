@@ -1,2 +1,1 @@
--Dynamic folder addition using local img or an img with web link
--Folder Page routes and its nav WIP
+Everything but dynamic video upload, deletion of stuff and tv app
