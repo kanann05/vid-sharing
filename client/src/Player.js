@@ -49,7 +49,6 @@ export default function Player(props) {
         controls={true}
         onPlay={() => setPlay(true)} 
         onPause={() => setPlay(false)} 
-        onRe
         className="player"
         width="100%"
         height="100%"

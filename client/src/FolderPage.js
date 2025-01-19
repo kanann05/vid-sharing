@@ -30,8 +30,43 @@ function SubFolders({ subfolders, setFocus }) {
         </div>)
 }
 
-function Video({ vidname, src }) {
-    return(<Link to = '/player' state={{src : src}} className = "sf-div" id = {vidname} style = {{
+function Video({ vidname, src, folder, subfolder }) {
+    let [video, setVideo] = useState(null);
+    useEffect(() => {
+        if(src.charAt(0) == '/') {
+            let videocall = async () => {
+                try {
+                    const response = await fetch(src, {
+                        method : 'POST',
+                        headers : {'Content-type' : 'application/json'},
+                        body : JSON.stringify({'token' : localStorage.getItem("accessToken") })
+                    
+                    })
+                    if(!response.ok) {
+                        if(response.status == 401) {
+                            console.log("unauth access");
+                            return;
+                        }
+                        setVideo(src);
+                    }
+                    else {
+                        const videoBlob = await response.blob();
+                        const videoObjectURL = URL.createObjectURL(videoBlob); 
+                        setVideo(videoObjectURL)
+                    }
+                }
+                catch (error) {
+                    
+                }
+            }
+            videocall();
+        }
+        else {
+            setVideo(src);
+        }
+    }, [])
+
+    return(<Link to = '/player' state={{src : video}} className = "sf-div" id = {vidname} style = {{
         overflow : "hidden",
         backgroundColor : "rgba(57, 57, 57, 0.7)",
         width : "100%",
@@ -183,7 +218,7 @@ export default function FolderPage() {
                 
                 ,position : "relative", marginTop : "20px", alignItems : "center", justifyContent : "center"}}>
                     <input value = {sfn} onChange = {(e) => {setSfn(e.target.value)}} placeholder = "Folder Name" style = {{backgroundColor : "rgba(255, 255, 255, 0.8)",
-                        width : "60%", height : "25px", borderRadius : "5px", outline : "none", shadow : "none", border : "none", paddingLeft : "10px", fontFamily : "lexend"
+                        width : "60%", color : "black", height : "25px", borderRadius : "5px", outline : "none", shadow : "none", border : "none", paddingLeft : "10px", fontFamily : "lexend"
                     }}></input>
                     <button onClick = {async (e) => {
                         // let formdata = new FormData();

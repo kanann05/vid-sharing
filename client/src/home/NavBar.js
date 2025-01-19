@@ -104,13 +104,15 @@ function NavBar({setLoggedin }) {
         }
         e.preventDefault();
         let formdata = new FormData();
-        formdata.append('img-file', constfile);
+        let fileup = new File([constfile], `${localStorage.getItem('username')}&&$${fn}&&$${constfile.name}`, {type : file.type});
+        formdata.append('img-file', fileup);
         formdata.append('username', localStorage.getItem('username'));
         formdata.append('imgUrl', th);
-        formdata.append('folderName', fn)
+        formdata.append('folderName', fn);
+
         try {
           const res = await axios.post('/uploadimg', formdata, {
-            headers : {'content-type' : 'multipart/form-data'},
+            headers : {'username' : localStorage.getItem('username')},
           });
           console.log(res.data)
           window.location.reload()

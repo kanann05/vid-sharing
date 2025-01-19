@@ -5,9 +5,48 @@ import data from '../data.js'
 import axios from 'axios';
 import FolderPage from '../FolderPage.js'
 function Folder({ folderName, imgUrl}) {
+    let [img, setImg] = useState(null)
     function Del() {
         return(<div className = "del-folder" style = {{width : "21px", height : "21px", fontSize : '10px', borderRadius : "100%", position : "absolute", top : "5px", right : "5px", backgroundColor:"rgba(0,0, 0, 0.7)", color : "white", textAlign:'center', display: "flex", justifyContent: "center", alignItems: 'center'}}>X</div>)
     }
+    useEffect(() => {
+        const fetchImage = async () => {
+          const token = localStorage.getItem('accessToken');
+          if (!token) {
+            console.error('No token found, user is not logged in');
+            return; // Optionally show an error to the user
+          }
+      
+          try {
+            const response = await fetch(imgUrl, {
+              method: 'POST',  
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body : JSON.stringify({'token' : localStorage.getItem("accessToken")})
+            });
+      
+            if (!response.ok) {
+              if (response.status === 401) {
+                console.error('Unauthorized access');
+               
+              } else {
+                console.error('Error fetching image:', response.statusText);
+              }
+              return;
+            }
+      
+            const imgBlob = await response.blob();
+            const imgObjectURL = URL.createObjectURL(imgBlob); 
+            setImg(imgObjectURL);
+          } catch (error) {
+            console.error('Error fetching image:', error);
+          }
+        };
+      
+        fetchImage();
+      }, []);
+      
     
     const rout = folderName;
     return(<Link  
@@ -37,7 +76,7 @@ function Folder({ folderName, imgUrl}) {
             height: "100%",
             objectFit: "cover"
         }}
-        src={imgUrl}
+        src={img}
         alt="Image"
     />
 </div>
@@ -56,8 +95,10 @@ export default function Folders() {
     }, [])
     return(<div style = {{width : "80vw"}}className = "folders">
         
-        {console.log(data)}
-        {data != null ? (data.map((folder, i ) => (<Folder folderName = {folder.foldername} imgUrl = {folder.img} key = {i} />))) : (null)}
+        {/* {console.log(data)} */}
+        {data != null ? (data.map((folder, i ) => (
+            
+            <Folder folderName = {folder.foldername} imgUrl = {folder.img} key = {i} />))) : (null)}
         
     </div>);
 }
