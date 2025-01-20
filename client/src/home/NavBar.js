@@ -104,7 +104,10 @@ function NavBar({setLoggedin }) {
         }
         e.preventDefault();
         let formdata = new FormData();
-        let fileup = new File([constfile], `${localStorage.getItem('username')}&&$${fn}&&$${constfile.name}`, {type : file.type});
+        let fileup = constfile;
+        if(constfile != null) {
+          fileup = new File([constfile], `${localStorage.getItem('username')}&&$${fn}&&$${constfile.name}`, {type : file.type});
+        }
         formdata.append('img-file', fileup);
         formdata.append('username', localStorage.getItem('username'));
         formdata.append('imgUrl', th);

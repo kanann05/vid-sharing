@@ -5,10 +5,14 @@ import data from './data.js'
 import axios from 'axios';
 import Player from './Player.js'
 
-function Subfolder({ sfname, setFocus }) {
+function Subfolder({ sfname, setFocus, focus }) {
     return(<div onClick = {() => {
+        if(document.getElementById(focus) != null) {
+         document.getElementById(focus).style.backgroundColor = "rgba(57, 57, 57, 0.7)";
+        }
         setFocus(sfname)
     }} className = "sf-div" id = {sfname} style = {{
+        cursor : "pointer",
         overflow : "hidden",
         backgroundColor : "rgba(57, 57, 57, 0.7)",
         width : "100%",
@@ -24,9 +28,9 @@ function Subfolder({ sfname, setFocus }) {
         {/* <div className = "sf-botbor"></div> */}
     </div>)
 }
-function SubFolders({ subfolders, setFocus }) {
+function SubFolders({ subfolders, setFocus, focus }) {
     return(<div style = {{marginTop : "0px", position : "relative", width : "100%"}}>
-            {subfolders != null ? (subfolders.map((f, i) => (<Subfolder setFocus = {setFocus} sfname={f} key = {i}/>))) : (null)}
+            {subfolders != null ? (subfolders.map((f, i) => (<Subfolder focus = {focus}setFocus = {setFocus} sfname={f} key = {i}/>))) : (null)}
         </div>)
 }
 
@@ -91,6 +95,9 @@ export default function FolderPage() {
     let [focus, setFocus] = useState(null);
     let [videos, setVideos] = useState(null);
     let [file, setFile] = useState(null);
+    let [avtoggle, setAvtoggle] = useState(false);
+    let [vn, setVn] = useState("");
+    let [vl, setVl] = useState("");
 
     useEffect(() => {
         if(focus != null) {
@@ -182,16 +189,16 @@ export default function FolderPage() {
             </div>
 
             <div>
-            <div className = "fp-nav-add">
+            <div className = "fp-nav-add" onClick={() => {setAvtoggle(!avtoggle)}}>
                 <div style = {{position : "relative", display : "flex", height : "55%", alignItems : "center"}}>
                     <img style = {{height : "85%", aspectRatio : "1/1"}} src = "add.png"/>
                 </div>
                 <p>Add video</p>
             </div>
-            <div className = "fp-add-vid-db" style = {{ padding : "0px 10px 0px 10px", marginTop : "10px", borderRadius : "5px", width : "180px", position : "relative", display : "flex", flexDirection : "column", position : "absolute", zIndex : "5", backgroundColor : "#373A3E", justifyContent : "center", alignItems : "center"}}>
-                <input style = {{marginTop : "15px", fontSize : "12px",marginBottom : "5px"}} placeholder = "Video name"></input>
+            <div className = "fp-add-vid-db" style = {{ display : avtoggle ? "flex" : "none", padding : "0px 10px 0px 10px", marginTop : "10px", borderRadius : "5px", width : "180px", position : "relative", flexDirection : "column", position : "absolute", zIndex : "5", backgroundColor : "#373A3E", justifyContent : "center", alignItems : "center"}}>
+                <input value = {vn} onChange = {(e) => {setVn(e.target.value)}} style = {{marginTop : "15px", fontSize : "12px",marginBottom : "5px"}} placeholder = "Video name"></input>
                 <h4 style = {{margin : "0", marginBottom : "10px", marginTop : "0px", color : "white"}}>-------------</h4>
-                <input style = {{fontSize : "12px",marginBottom : "10px"}} placeholder = "Video url"></input>
+                <input value = {vl} onChange = {(e) => {setVl(e.target.value)}} style = {{fontSize : "12px",marginBottom : "10px"}} placeholder = "Video url"></input>
                 
                 <input type="file" onChange = {(e) => {
                     setFile(e.target.files[0]);
@@ -200,7 +207,29 @@ export default function FolderPage() {
                 <h4 style = {{margin : "0", margin : "0", color : "white", fontSize : "12px", fontWeight : "100"}}>{file == null? "" : file.name}</h4>
                 <h4 style = {{margin : "0",margin : "5px 0px 10px 0px", marginBottom : "5px", color : "white"}}>-------------</h4>
 
-                <button style = {{marginBottom : "15px", color : "#FAEBD7", backgroundColor : "#26282B", fontFamily : "lexend", width : "70%",height : "30px"}}>Add</button>
+                <button className = "add-video-button" onClick = {async () =>{
+                    
+                    let fd = new FormData();
+                    let vup = file;
+                    if(file!=null) {
+                        vup = new File([file], `${localStorage.getItem('username')}&&$${folder}&&$${focus}&&$${file.name}`, {type : file.type})
+                    }
+                    fd.append('user', localStorage.getItem('username'));
+                    fd.append('folder', folder);
+                    fd.append('subfolder', focus);
+                    fd.append('videoname', vn);
+                    fd.append('videolink', vl);
+                    fd.append('video', vup)
+
+                    try {
+                        const res = await axios.post('/uploadvideo', fd, {
+                            headers : {'username' : localStorage.getItem('username')},
+                        });
+                    }
+                    catch(error) {
+                        console.log(error);
+                    }
+                }} style = {{marginBottom : "15px", color : "#FAEBD7", backgroundColor : "#26282B", fontFamily : "lexend", width : "70%",height : "30px"}}>Add</button>
             </div>
             </div>
         </div>
@@ -235,10 +264,13 @@ export default function FolderPage() {
                         if(!res.ok) {
                             alert("error occured");
                         }
+                        else {
+                            window.location.reload();
+                        }
                     }} style = {{marginTop : "10px", width : "25%", padding : "0", marginBottom : "10px", backgroundColor : "rgba(0, 30, 0, 0)", border : "white 1px solid", display : "flex", alignItems:"center", justifyContent : "center", textAlign : "center"}}>add</button>
                 </div>
                 <p style = {{padding : "0", margin : "5px 0 5px 0"}}>------------</p>
-                <SubFolders subfolders={subfolders} setFocus = {setFocus}/>
+                <SubFolders subfolders={subfolders} setFocus = {setFocus} focus= {focus}/>
             </div>
 
             

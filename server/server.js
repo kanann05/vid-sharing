@@ -47,7 +47,7 @@ var storage_video = multer.diskStorage({
     cb(null, path.join(__dirname, 'jsons', user, folder, subfolder));
   },
   filename : function (req, file, cb) {
-    cb(null, file.originalname);
+    cb(null, file.originalname.split("&&$")[3]);
   }
 });
 
@@ -61,14 +61,26 @@ app.listen('5000', () => {
 });
 
 
-app.post('/uploadvideo', video_upload.single('video-file'), (req, res, next) => {
+app.post('/uploadvideo', video_upload.single('video'), (req, res, next) => {
   const file = req.file;
   const videoname = req.body.videoname;
+  const user = req.body.user;
   const folder = req.body.folder;
   const subfolder = req.body.subfolder;
-  let url = req.body.url;
-  let filepath = !file? `/videos/${file.filename}` : url;
+  const name = req.body.videoname
+ 
+  if(!req.file) {
+    //link hai
+    require(`${__dirname}/jsons/${user}/${folder}/vid-locs.js`).find(i => i.subfolder === subfolder).details.push({'videoname' : name, 'src' : req.body.videolink});
+    
+  }
 
+  else {
+    require(`${__dirname}/jsons/${user}/${folder}/vid-locs.js`).find(i => i.subfolder === subfolder).details.push({'videoname' : name, 'src' : `${user}/${folder}/${subfolder}/${req.file.filename}`});
+
+  }
+  console.log(require(`${__dirname}/jsons/${user}/${folder}/vid-locs.js`).find(i => i.subfolder === subfolder).details)
+  return res.json({"succuess" : true});
   
 })
 app.post('/uploadimg', img_upload.single('img-file'), (req, res, next) => {
@@ -167,6 +179,7 @@ app.post('/videos', (req, res) => {
     }
     
 })
+
 app.post('/createsf', (req, res) => {
   // console.log(req.body)
   console.log("ala")
@@ -174,7 +187,10 @@ app.post('/createsf', (req, res) => {
     return res.sendStatus(420);
   }
   fs.mkdir(`${__dirname}/jsons/${req.body.username}/${req.body.folder}/${req.body.subfolder}`, {recursive:true}, (err) => {if (err) return res.sendStatus(400)});
-  require()
+  require(`${__dirname}/jsons/${req.body.username}/${req.body.folder}/subfolders.js`).push(req.body.subfolder);
+  require(`${__dirname}/jsons/${req.body.username}/${req.body.folder}/vid-locs.js`).push({'subfolder' : req.body.subfolder, 'details' : []});
+  console.log(require(`${__dirname}/jsons/${req.body.username}/${req.body.folder}/subfolders.js`));
+  console.log( require(`${__dirname}/jsons/${req.body.username}/${req.body.folder}/vid-locs.js`));
   return res.json({"success" : "true"});
 })
 
