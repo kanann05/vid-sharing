@@ -37,9 +37,12 @@ function SubFolders({ subfolders, setFocus, focus }) {
 function Video({ vidname, src, folder, subfolder }) {
     let [video, setVideo] = useState(null);
     useEffect(() => {
+        console.log(src)
         if(src.charAt(0) == '/') {
+            console.log(vidname)
             let videocall = async () => {
                 try {
+                    console.log(vidname);
                     const response = await fetch(src, {
                         method : 'POST',
                         headers : {'Content-type' : 'application/json'},
@@ -56,6 +59,7 @@ function Video({ vidname, src, folder, subfolder }) {
                     else {
                         const videoBlob = await response.blob();
                         const videoObjectURL = URL.createObjectURL(videoBlob); 
+                        console.log(videoObjectURL + vidname);
                         setVideo(videoObjectURL)
                     }
                 }

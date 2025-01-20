@@ -76,7 +76,7 @@ app.post('/uploadvideo', video_upload.single('video'), (req, res, next) => {
   }
 
   else {
-    require(`${__dirname}/jsons/${user}/${folder}/vid-locs.js`).find(i => i.subfolder === subfolder).details.push({'videoname' : name, 'src' : `${user}/${folder}/${subfolder}/${req.file.filename}`});
+    require(`${__dirname}/jsons/${user}/${folder}/vid-locs.js`).find(i => i.subfolder === subfolder).details.push({'videoname' : name, 'src' : `/${user}/${folder}/${subfolder}/${req.file.filename}`});
 
   }
   console.log(require(`${__dirname}/jsons/${user}/${folder}/vid-locs.js`).find(i => i.subfolder === subfolder).details)
@@ -226,7 +226,7 @@ app.post('/:user/:folder/:file', (req, res) => {
 
 app.post('/:user/:folder/:subfolder/:filename', (req, res) => {
   console.log(req.params);
-
+  
   const filePath = path.join(
     __dirname,
     'jsons',
@@ -253,9 +253,20 @@ app.post('/:user/:folder/:subfolder/:filename', (req, res) => {
     });
 
     if (err) return res.status(410).send('Unauthorized');
-  });
+  }
+);
 
-  
+// res.sendFile(filePath, (error) => {
+//   if (error) {
+//     console.error("Error sending file:", error);
+//     if (!res.headersSent) { // Ensure headers haven't already been sent
+//       res.sendStatus(409);
+//     }
+//   } else {
+//     console.log("File sent successfully");
+//   }
+// });
+
 })
 
 

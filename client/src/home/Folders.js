@@ -10,41 +10,47 @@ function Folder({ folderName, imgUrl}) {
         return(<div className = "del-folder" style = {{width : "21px", height : "21px", fontSize : '10px', borderRadius : "100%", position : "absolute", top : "5px", right : "5px", backgroundColor:"rgba(0,0, 0, 0.7)", color : "white", textAlign:'center', display: "flex", justifyContent: "center", alignItems: 'center'}}>X</div>)
     }
     useEffect(() => {
-        const fetchImage = async () => {
-          const token = localStorage.getItem('accessToken');
-          if (!token) {
-            console.error('No token found, user is not logged in');
-            return; // Optionally show an error to the user
-          }
-      
-          try {
-            const response = await fetch(imgUrl, {
-              method: 'POST',  
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body : JSON.stringify({'token' : localStorage.getItem("accessToken")})
-            });
-      
-            if (!response.ok) {
-              if (response.status === 401) {
-                console.error('Unauthorized access');
-               
-              } else {
-                console.error('Error fetching image:', response.statusText);
-              }
-              return;
+        if(imgUrl.charAt(0) == '/') {
+          const fetchImage = async () => {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+              console.error('No token found, user is not logged in');
+              return; // Optionally show an error to the user
             }
-      
-            const imgBlob = await response.blob();
-            const imgObjectURL = URL.createObjectURL(imgBlob); 
-            setImg(imgObjectURL);
-          } catch (error) {
-            console.error('Error fetching image:', error);
-          }
-        };
-      
-        fetchImage();
+        
+            try {
+              const response = await fetch(imgUrl, {
+                method: 'POST',  
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({'token' : localStorage.getItem("accessToken")})
+              });
+        
+              if (!response.ok) {
+                if (response.status === 401) {
+                  console.error('Unauthorized access');
+                 
+                } else {
+                  console.error('Error fetching image:', response.statusText);
+                }
+                return;
+              }
+        
+              const imgBlob = await response.blob();
+              const imgObjectURL = URL.createObjectURL(imgBlob); 
+              setImg(imgObjectURL);
+            } catch (error) {
+              console.error('Error fetching image:', error);
+            }
+          };
+        
+          fetchImage();
+        }
+        else {
+          setImg(imgUrl);
+        }
+        
       }, []);
       
     
