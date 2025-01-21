@@ -36,45 +36,45 @@ function SubFolders({ subfolders, setFocus, focus }) {
 
 function Video({ vidname, src, folder, subfolder }) {
     let [video, setVideo] = useState(null);
-    useEffect(() => {
-        console.log(src)
-        if(src.charAt(0) == '/') {
-            console.log(vidname)
-            let videocall = async () => {
-                try {
-                    console.log(vidname);
-                    const response = await fetch(src, {
-                        method : 'POST',
-                        headers : {'Content-type' : 'application/json'},
-                        body : JSON.stringify({'token' : localStorage.getItem("accessToken") })
+    // useEffect(() => {
+    //     console.log(src)
+    //     if(src.charAt(0) == '/') {
+    //         console.log(vidname)
+    //         let videocall = async () => {
+    //             try {
+    //                 console.log(vidname);
+    //                 const response = await fetch(src, {
+    //                     method : 'POST',
+    //                     headers : {'Content-type' : 'application/json'},
+    //                     body : JSON.stringify({'token' : localStorage.getItem("accessToken") })
                     
-                    })
-                    if(!response.ok) {
-                        if(response.status == 401) {
-                            console.log("unauth access");
-                            return;
-                        }
-                        setVideo(src);
-                    }
-                    else {
-                        const videoBlob = await response.blob();
-                        const videoObjectURL = URL.createObjectURL(videoBlob); 
-                        console.log(videoObjectURL + vidname);
-                        setVideo(videoObjectURL)
-                    }
-                }
-                catch (error) {
+    //                 })
+    //                 if(!response.ok) {
+    //                     if(response.status == 401) {
+    //                         console.log("unauth access");
+    //                         return;
+    //                     }
+    //                     setVideo(src);
+    //                 }
+    //                 else {
+    //                     const videoBlob = await response.blob();
+    //                     const videoObjectURL = URL.createObjectURL(videoBlob); 
+    //                     console.log(videoObjectURL + vidname);
+    //                     setVideo(videoObjectURL)
+    //                 }
+    //             }
+    //             catch (error) {
                     
-                }
-            }
-            videocall();
-        }
-        else {
-            setVideo(src);
-        }
-    }, [])
+    //             }
+    //         }
+    //         videocall();
+    //     }
+    //     else {
+    //         setVideo(src);
+    //     }
+    // }, [])
 
-    return(<Link to = '/player' state={{src : video}} className = "sf-div" id = {vidname} style = {{
+    return(<Link to = '/player' state={{src : src}} className = "sf-div" id = {vidname} style = {{
         overflow : "hidden",
         backgroundColor : "rgba(57, 57, 57, 0.7)",
         width : "100%",

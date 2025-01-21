@@ -61,6 +61,7 @@ app.listen('5000', () => {
 });
 
 
+
 app.post('/uploadvideo', video_upload.single('video'), (req, res, next) => {
   const file = req.file;
   const videoname = req.body.videoname;
@@ -133,7 +134,7 @@ fs.writeFile(fp2, content2, (err) => {
   //   return res.status(403).send('Image with same name exists');
   // }
   
-  require(`${__dirname}/jsons/${req.body.username}/data.js`).push({'foldername' : req.body.folderName,'img' : `${user}/${req.body.folderName}/${req.file.filename}`}); 
+  require(`${__dirname}/jsons/${req.body.username}/data.js`).push({'foldername' : req.body.folderName,'img' : `/${user}/${req.body.folderName}/${req.file.filename}`}); 
   console.log(require(`${__dirname}/jsons/${req.body.username}/data.js`)) 
   // console.log(require(`./jsons/${req.body.username}/data.js`))
   // console.log( require(`./jsons/${req.body.username}/data.js`));
@@ -223,6 +224,7 @@ app.post('/:user/:folder/:file', (req, res) => {
 
   
 });
+
 
 app.post('/:user/:folder/:subfolder/:filename', (req, res) => {
   console.log(req.params);

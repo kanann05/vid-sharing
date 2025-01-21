@@ -6,6 +6,52 @@ export default function Player(props) {
   const location = useLocation(); 
  
   const { src } = location.state;
+  let [srcurl, setSrcurl] = useState(null);
+  window.addEventListener('popstate', () => {
+    if (srcurl) {
+      URL.revokeObjectURL(srcurl);
+      console.log("Blob URL revoked");
+    }
+  })
+  
+  useEffect(() => {
+          console.log(src)
+          if(src.charAt(0) == '/') {
+              
+              let videocall = async () => {
+                  try {
+                      
+                      const response = await fetch(src, {
+                          method : 'POST',
+                          headers : {'Content-type' : 'application/json'},
+                          body : JSON.stringify({'token' : localStorage.getItem("accessToken") })
+                      
+                      })
+                      if(!response.ok) {
+                          if(response.status == 401) {
+                              console.log("unauth access");
+                              return;
+                          }
+                          setSrcurl(src);
+                      }
+                      else {
+                          const videoBlob = await response.blob();
+                          const videoObjectURL = URL.createObjectURL(videoBlob); 
+                          // console.log(videoObjectURL + vidname);
+                          setSrcurl(videoObjectURL)
+                      }
+                  }
+                  catch (error) {
+                      
+                  }
+              }
+              videocall();
+              
+          }
+          else {
+              setSrcurl(src);
+          }
+      }, [])
 
   return (
     <div
@@ -52,7 +98,7 @@ export default function Player(props) {
         className="player"
         width="100%"
         height="100%"
-        url={src}
+        url={srcurl}
     //     config={{
     //       file: {
     //         tracks: [
